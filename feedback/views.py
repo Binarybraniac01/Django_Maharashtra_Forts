@@ -14,6 +14,11 @@ import os
 
 @login_required(login_url="/login-page/")
 def feedback(request):
+
+    # To get the current users instance
+    if request.user.is_authenticated:
+        email = request.user.email
+
     if request.method == "POST":
         data = request.POST
 
@@ -38,4 +43,4 @@ def feedback(request):
         messages.info(request, "Feeedback submited successfully.")
         return redirect('/feedback/')
 
-    return render(request, "feedback.html")
+    return render(request, "feedback.html", {'email': email})

@@ -14,23 +14,27 @@ def register_page(request):
     if request.method == "POST":
         data = request.POST
 
-        first_name = data.get("first_name")
-        last_name = data.get("last_name")
+        # first_name = data.get("first_name")
+        # last_name = data.get("last_name")
+        raw_email = data.get("email")
+        email = raw_email.lower()
         username = data.get("username")
         password = data.get("password")
 
+        if User.objects.filter(email=email).exists():
+            messages.info(request, "email already exists. Please use valid email...")
+            return redirect('/register-page/')
+        
         if User.objects.filter(username=username).exists():
             messages.info(request, "Username already exists. Please use another username...")
             return redirect('/register-page/')
 
-        user = User.objects.create(first_name=first_name, 
-                                   last_name=last_name,
-                                   username=username)
+        user = User.objects.create(email=email, username=username)
         
         user.set_password(password)
         user.save()
         messages.info(request, "User registration successfull.....")
-        return redirect('/register-page/')
+        return redirect('/login-page/')
 
     return render(request, "register.html", context={"page": "Register"})
 

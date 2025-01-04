@@ -24,7 +24,7 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="email" class="form-label">Your Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <input type="email" class="form-control" id="email_input" name="email" required>
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Your Thoughts</label>
@@ -64,5 +64,10 @@
     </div>
 </div>
 <!-- Feedback Form End -->
+
+<script type="text/javascript">
+  // Use Django's template language to inject the email dynamically
+  document.getElementById("email_input").value = "{{ email }}";
+</script>
 
 {% endblock %}

@@ -540,7 +540,9 @@ def recom_generateplan(request):
                     # appending all in one list
                     # Note the occurs here if the distance matrix does not get the locations
                     print(f"l_names_len: {len(l_names)}, d_t_val_len: {len(d_t_val)}, fuel_n_cost_len: {len(fuel_n_cost)}")
-                    for i in range(len(l_names)):
+                    min_length = min(len(l_names), len(d_t_val), len(fuel_n_cost)) # add this and below line that 
+                    for i in range(min_length): 
+                    # for i in range(len(l_names)):
                         location_info = l_names[i]
                         distance_info = d_t_val[i]
                         fuel_and_cost = fuel_n_cost[i]
