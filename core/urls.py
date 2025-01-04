@@ -30,6 +30,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', home_view, name='home_view'),
+    path('search/', search_api, name='search_api'),
     path('send-coordinates/', send_coordinates), # remember to delete user specific coordinates and optimize code for that
     path('generateplan/', generateplan, name='generateplan'),
 

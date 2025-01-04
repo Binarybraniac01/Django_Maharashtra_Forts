@@ -21,6 +21,40 @@ import os
 import sys
 
 
+
+from django.http import JsonResponse
+
+def search_api(request):
+
+    if not request.user.is_authenticated:
+            return redirect("/login-page/")
+    
+    query = request.GET.get('q', '')
+    # Filtering items from  database
+    if query:
+        results = list(
+            set(Forts.objects.filter(fort_district__icontains=query)
+            .values_list('fort_district', flat=True)
+            .distinct()[:10])  
+        )
+
+        """
+        values_list() method is used to retrieve specific fields from a queryset, rather than retrieving the entire model instance.
+        'fort_district': The field you want to include in the results.
+        flat=True: This simplifies the output to a flat list rather than a list of tuples (default behavior).
+        [:10] : gives first 10 entries
+        (e.g., <QuerySet ['Raigad Fort', 'Pratapgad Fort']>).
+        
+        """
+
+    else:
+        results = []
+
+    return JsonResponse({'results': results})
+
+
+
+
 def home_view(request):
 
     active1 = "active"
@@ -521,9 +555,9 @@ def generateplan(request):
 
                     # appending all in one list
                     print(f"l_names_len: {len(l_names)}, d_t_val_len: {len(d_t_val)}, fuel_n_cost_len: {len(fuel_n_cost)}")
-                    # min_length = min(len(l_names), len(d_t_val), len(fuel_n_cost))
-                    # for i in range(min_length):
-                    for i in range(len(l_names)): 
+                    min_length = min(len(l_names), len(d_t_val), len(fuel_n_cost)) # add this and below line that 
+                    for i in range(min_length):                                    # will remove the api not giving the plans for it most occurs bcoz of different list counts
+                    # for i in range(len(l_names)): # this was in previous code
                         location_info = l_names[i]
                         distance_info = d_t_val[i]
                         fuel_and_cost = fuel_n_cost[i]

@@ -17,21 +17,37 @@
                         <div class="position-relative mx-auto search-bar-container animate-slide-up">
                             <form id="search-form" method="post">
                                 {% csrf_token %}
-                                <input 
+                                <!-- <input 
                                     id="first-input" 
                                     class="form-control custom-input rounded-pill py-3 ps-4 pe-5" 
                                     name="user_district" 
                                     type="text" 
                                     placeholder="Enter District Name"
-                                >
+                                > -->
+
+                                <div class="autoComplete_wrapper position-relative">
+                                    <input id="autoComplete" type="search" name="user_district" 
+                                            dir="ltr" spellcheck="false" autocorrect="off" autocomplete="off" autocapitalize="off">
+                                    <button 
+                                        type="submit"
+                                        id="searchButton" 
+                                        class="btn btn-light rounded-pill py-1 px-2 position-absolute top-50 translate-middle-y end-0 me-2 w-auto" 
+                                        form="search-form" 
+                                        formaction="/">
+                                        Search
+                                    </button> <!-- id is required for -->
+                                </div>
+                                <!-- above name was not originally in autocomplte div(it does not require it as its default is query)  
+                                    its for finding forts based on district the home_view code -->
+
                             </form>
-                            <button 
+                            <!-- <button 
                                 type="submit" 
                                 class="btn btn-light rounded-pill py-2 px-4 position-absolute top-50 translate-middle-y end-0 me-2 w-auto" 
                                 form="search-form" 
                                 formaction="/">
                                 Search
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -211,10 +227,55 @@
 </div>
 
 
-
-
 {% endif %}
 
+
+
+
+
+<!-- For Autocomplte -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Fetch search list from Django
+        async function fetchSearchList(query) {
+            try {
+                const response = await fetch(`/search/?q=${query}`);
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                const data = await response.json();
+                return data.results; // Assuming the Django response has a `results` key
+            } catch (error) {
+                console.error("Error fetching search list:", error);
+                return [];
+            }
+        }
+
+        // Initialize autoComplete.js
+        const autoCompleteJS = new autoComplete({
+            selector: "#autoComplete", // Attach to the input element by ID
+            placeHolder: "Search for district...",
+            data: {
+                src: async (query) => {
+                    return await fetchSearchList(query);
+                },
+                cache: false,
+            },
+            resultItem: {
+                highlight: true,
+            },
+            events: {
+                input: {
+                    selection: (event) => {
+                        const selection = event.detail.selection.value;
+                        autoCompleteJS.input.value = selection;
+                        document.getElementById("searchButton").click();
+                    }
+                }
+            }
+        });
+    });
+</script>
 
 
 
