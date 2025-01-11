@@ -18,8 +18,13 @@ def register_page(request):
         # last_name = data.get("last_name")
         raw_email = data.get("email")
         email = raw_email.lower()
-        username = data.get("username")
-        password = data.get("password")
+
+        raw_username = data.get("username")
+        username = raw_username.strip()
+
+        raw_password = data.get("password")
+        password = raw_password.strip()
+
 
         if User.objects.filter(email=email).exists():
             messages.info(request, "email already exists. Please use valid email...")
@@ -45,8 +50,14 @@ def login_page(request):
     if request.method == "POST":
         data = request.POST
 
-        username = data.get("username")
-        password = data.get("password")
+        # username = data.get("username")
+        # password = data.get("password")
+
+        raw_username = data.get("username")
+        username = raw_username.strip()
+
+        raw_password = data.get("password")
+        password = raw_password.strip()
 
         if not User.objects.filter(username=username).exists():
             messages.error(request, "Invalid Username...")
